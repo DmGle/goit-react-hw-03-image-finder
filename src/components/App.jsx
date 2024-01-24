@@ -1,4 +1,3 @@
-// App.jsx
 import React, { Component } from 'react';
 import axios from 'axios';
 import Searchbar from './Searchbar';
@@ -18,6 +17,7 @@ class App extends Component {
     isLoading: false,
     showModal: false,
     selectedImage: '',
+    perPage: 12,
   };
 
   handleSearch = (query) => {
@@ -25,16 +25,17 @@ class App extends Component {
   };
 
   fetchImages = () => {
-    const { query, page } = this.state;
-    const perPage = 12;
+    const { query, page, perPage } = this.state;
 
     this.setState({ isLoading: true });
 
     axios
       .get(`https://pixabay.com/api/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`)
       .then((response) => {
+        const newImages = response.data.hits.slice(0, perPage);
+
         this.setState((prevState) => ({
-          images: [...prevState.images, ...response.data.hits],
+          images: [...prevState.images, ...newImages],
           page: prevState.page + 1,
         }));
       })
@@ -43,7 +44,9 @@ class App extends Component {
   };
 
   handleLoadMore = () => {
-    this.fetchImages();
+    if (!this.state.isLoading) {
+      this.setState((prevState) => ({ page: prevState.page + 1 }), this.fetchImages);
+    }
   };
 
   handleImageClick = (url) => {
