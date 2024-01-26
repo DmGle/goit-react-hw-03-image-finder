@@ -11,7 +11,11 @@ class Searchbar extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onSubmit(this.state.query);
+    if (typeof this.props.onSubmit === 'function') {
+      this.props.onSubmit(this.state.query);
+    } else {
+      console.error('onSubmit is not a function');
+    }
   };
 
   render() {

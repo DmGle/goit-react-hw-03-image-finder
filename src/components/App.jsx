@@ -20,10 +20,16 @@ class App extends Component {
     perPage: 12,
   };
 
-  handleSearch = (query) => {
-    this.setState({ query, page: 1, images: [] }, this.fetchImages);
-  };
-
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.query !== prevState.query) {
+      this.setState({ images: [], page: 1 }, () => {
+        this.fetchImages();
+      });
+    } else if (this.state.page !== prevState.page) {
+      this.fetchImages();
+    }
+  }
+  
   fetchImages = () => {
     const { query, page, perPage } = this.state;
 
@@ -36,7 +42,6 @@ class App extends Component {
 
         this.setState((prevState) => ({
           images: [...prevState.images, ...newImages],
-          page: prevState.page + 1,
         }));
       })
       .catch((error) => console.error('Error fetching images:', error))
@@ -45,7 +50,7 @@ class App extends Component {
 
   handleLoadMore = () => {
     if (!this.state.isLoading) {
-      this.setState((prevState) => ({ page: prevState.page + 1 }), this.fetchImages);
+      this.setState((prevState) => ({ page: prevState.page + 1 }));
     }
   };
 
@@ -62,7 +67,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Searchbar onSubmit={this.handleSearch} />
+        <Searchbar onSubmit={(query) => this.setState({ query, page: 1, images: [] })} />
         <ImageGallery images={images} onImageClick={this.handleImageClick} />
         {isLoading && <Loader />}
         {images.length > 0 && <Button onClick={this.handleLoadMore} hasMore={!isLoading} />}
