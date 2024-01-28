@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Searchbar from './Searchbar';
-import ImageGallery from './ImageGallery';
-import Button from './Button';
-import Loader from './Loader';
-import Modal from './Modal';
-import './styles.css';
+import Searchbar from '../Searchbar/Searchbar';
+import ImageGallery from '../ImageGallery/ImageGallery';
+import Button from '../Button/Button';
+import Loader from '../Loader/Loader';
+import Modal from '../Modal/Modal';
+import '../styles.css';
 
 const API_KEY = '40969822-9ca982a77db095185d4787118';
 
