@@ -20,16 +20,19 @@ class App extends Component {
     perPage: 12,
   };
 
+  handleSearchSubmit = (query) => {
+    this.setState({ query, page: 1, images: [] }, () => {
+    });
+  };
+
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.query !== prevState.query) {
-      this.setState({ images: [], page: 1 }, () => {
-        this.fetchImages();
-      });
-    } else if (this.state.page !== prevState.page) {
+    if (this.state.query !== prevState.query && !this.state.query.trim()) {
+      this.setState({ images: [] });
+    } else if (this.state.query !== prevState.query || this.state.page !== prevState.page) {
       this.fetchImages();
     }
   }
-  
+
   fetchImages = () => {
     const { query, page, perPage } = this.state;
 
@@ -67,7 +70,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Searchbar onSubmit={(query) => this.setState({ query, page: 1, images: [] })} />
+        <Searchbar onSubmit={this.handleSearchSubmit} />
         <ImageGallery images={images} onImageClick={this.handleImageClick} />
         {isLoading && <Loader />}
         {images.length > 0 && <Button onClick={this.handleLoadMore} hasMore={!isLoading} />}
